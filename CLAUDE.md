@@ -69,7 +69,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 |---|---|
 | `CONTEXT.md` | 名詞表。強制。先讀 |
 | `docs/factory.md` | **產品產線**：四個元件、四層架構、八站、層級、自我改善、量測 |
-| `docs/factory-setup.md` | **建廠產線**：七站、四題問需求、技術棧對照表、驗收標準 |
+| `docs/factory-setup.md` | **建廠產線**：七站、五題問需求、技術棧對照表、驗收標準 |
 | `docs/product-contract.md` | 產品合約的三項要求，以及合約不管什麼 |
 | `docs/security.md` | 四層防線的排序，以及五條架構層規則 |
 | `docs/codeshore.md` | CodeShore 的調查紀錄。**最重要的外部參考** |
@@ -101,6 +101,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 只准 **PKCE flow**，session 存 HttpOnly cookie | token 進 `localStorage` 會被 XSS 偷走 |
 | 接受**沒有 Realtime 訂閱** | 它需要前端持有 token。那與上一條衝突 |
 | 預覽與生產是**不同專案、不同帳號** | 同一個專案不同環境變數是 rules 層，agent 會寫錯 |
+| 資安檢查**擋在 CI，不擋在驗證站** | 驗證站第一版不做判定者。證據裡只附一頁資訊 |
+| 個資規則由第 5 題**分流啟用**，不預設開 | 存不存別人的資料是每座工廠各自的事，腳手架不預測 |
 | 聊天管道**先不做** | 入口層的決定依賴廠主層級。L3 不需要聊天入口 |
 
 ---
@@ -114,10 +116,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 5. 層級要怎麼加進一個本來假設廠主是工程師的產品產線。
 6. 影像證據與文字證據是取代關係還是並存關係。
 7. 腳手架自己的帳本檔名與格式。見 `docs/factory-setup.md` 第 6 節。
-8. 驗證站要不要包含資安驗證，以及它是關卡還是只是資訊。
-9. 產品會不會存別人的資料。會的話進入個資範圍。
-10. 廠主自己的帳號安全。見 `docs/security.md` 第 6 節。
-11. 責任歸屬。民眾三句話做出一個收集客戶電話的網站，責任是誰的。
+
+**L1 才需要解的四題不列在這裡。** 它們在廠主不是你的時候才咬人，連同「為什麼現在不解」一起記在 `docs/security.md` 第 7 節。不要把它們當成待辦。
 
 ---
 
