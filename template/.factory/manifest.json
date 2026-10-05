@@ -1,0 +1,10 @@
+{
+  "scaffold": {
+    "version": "{{SCAFFOLD_VERSION}}",
+    "commit": "{{SCAFFOLD_COMMIT}}"
+  },
+  "tier": "L3",
+  "product_form": "{{PRODUCT_FORM}}",
+  "created_at": "{{TIMESTAMP}}",
+  "shared": {}
+}
