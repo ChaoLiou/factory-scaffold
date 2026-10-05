@@ -18,7 +18,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 加新詞時連同 `_避免_` 一起寫。
 
-文件用繁體中文，句子短。
+文件用繁體中文，句子短。中文字後面用全形逗號。
+
+## 資安規則往上推
+
+一條規則能放在**架構層**就不要放 CI 層，能放 CI 層就不要放 rules 層。四層強度遞減：架構 > CI／靜態分析 > rules > 技能檔。
+
+理由：民眾不審 code，所以不會發現資料外洩 —— 它不出現在錄影裡。下兩層依賴 agent 記得，而 agent 會忘。
+
+第一條架構規則是**前端不持有任何可以直接存取資料的憑證**。寫任何碰資料的程式碼之前先讀 `docs/security.md` 第 3 節。
 
 ---
 
@@ -63,6 +71,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `docs/factory.md` | **產品產線**：四個元件、四層架構、八站、層級、自我改善、量測 |
 | `docs/factory-setup.md` | **建廠產線**：七站、四題問需求、技術棧對照表、驗收標準 |
 | `docs/product-contract.md` | 產品合約的三項要求，以及合約不管什麼 |
+| `docs/security.md` | 四層防線的排序，以及五條架構層規則 |
 | `docs/codeshore.md` | CodeShore 的調查紀錄。**最重要的外部參考** |
 | `docs/openclaw.md` | OpenClaw 的調查紀錄，含聊天管道的平台限制 |
 
@@ -88,6 +97,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | 五種產品型態用**三套技術棧** | 一份技能檔要服務所有工廠。技術棧越少，改善越快 |
 | 廠主說「我要 APP」預設給 **PWA** | 不過審核、不建兩包、不要 macOS，而且合約三項完全不用改 |
 | 要求二走**共用一個資料庫，每輪重置** | 免費。接受並行污染，因為第一座工廠只有一個廠主 |
+| **前端不持有任何憑證** | 民眾不審 code，所以不會發現資料外洩。資安靠架構擋，不靠關卡擋 |
+| 只准 **PKCE flow**，session 存 HttpOnly cookie | token 進 `localStorage` 會被 XSS 偷走 |
+| 接受**沒有 Realtime 訂閱** | 它需要前端持有 token。那與上一條衝突 |
+| 預覽與生產是**不同專案、不同帳號** | 同一個專案不同環境變數是 rules 層，agent 會寫錯 |
 | 聊天管道**先不做** | 入口層的決定依賴廠主層級。L3 不需要聊天入口 |
 
 ---
@@ -101,6 +114,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 5. 層級要怎麼加進一個本來假設廠主是工程師的產品產線。
 6. 影像證據與文字證據是取代關係還是並存關係。
 7. 腳手架自己的帳本檔名與格式。見 `docs/factory-setup.md` 第 6 節。
+8. 驗證站要不要包含資安驗證，以及它是關卡還是只是資訊。
+9. 產品會不會存別人的資料。會的話進入個資範圍。
+10. 廠主自己的帳號安全。見 `docs/security.md` 第 6 節。
+11. 責任歸屬。民眾三句話做出一個收集客戶電話的網站，責任是誰的。
 
 ---
 

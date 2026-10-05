@@ -324,6 +324,30 @@ _避免_：回饋、feedback、標註
 
 ---
 
+## 資安
+
+### 防線 (defence layer)
+
+防線是一條規則被放在哪一層。四層，強度遞減:**架構 > CI／靜態分析 > rules > 技能檔**。
+
+前兩層違規就 CI 紅。後兩層 agent 會忘，只能疊加，不能當唯一防線。
+
+一條規則能放在架構層就不要放 CI 層，能放 CI 層就不要放 rules 層。見 `docs/security.md` 第 2 節。
+
+_避免_：層級（層級指廠主的工程背景）、等級、優先順序
+
+### 憑證 (credential)
+
+憑證是任何可以直接存取資料的東西：anon key、access token、service role key、資料庫連線字串。
+
+**第一條架構規則：前端不持有任何憑證。** 見 `docs/security.md` 3.1。
+
+session cookie 不算憑證，前提是它是 HttpOnly —— JS 讀不到的東西前端就不算持有。
+
+_避免_：金鑰、密鑰（密鑰指部署平台注入的那些）、token
+
+---
+
 ## 架構
 
 ### 入口層 (intake layer)
