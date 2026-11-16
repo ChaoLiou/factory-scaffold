@@ -1,0 +1,114 @@
+{
+  "declaration_version": 1,
+  "note": "每一站拿得到哪些工具。這一份是共用的，腳手架維護 —— 它是架構層的規則，不是每座工廠各自的設定。怎麼把它交給 harness，由 .factory/run-worker.sh 翻譯。",
+  "why": "工人只拿得到那一站需要的工具。入口站不需要改檔案的能力，審查站不需要開 PR 的能力。少給一樣，那一站就少一條做錯事的路。",
+  "stations": {
+    "fac-intake": {
+      "allow": [
+        "Read",
+        "Bash(gh issue:*)"
+      ],
+      "why": "它只把廠主的話整成任務。它不碰檔案"
+    },
+    "fac-triage": {
+      "allow": [
+        "Read",
+        "Bash(gh issue:*)",
+        "Bash(gh label list:*)"
+      ],
+      "why": "它貼標籤，不實作、不開 PR、不關任務。貼之前要先確認那個標籤存在"
+    },
+    "fac-spec": {
+      "allow": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(gh issue:*)"
+      ],
+      "why": "它只寫 specs/ 底下那四個檔案"
+    },
+    "fac-implement": {
+      "allow": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(git:*)",
+        "Bash(gh pr:*)",
+        "Bash(npm:*)",
+        "Bash(npx:*)"
+      ],
+      "why": "唯一會改產品程式碼的一站。測試與建置指令讀 checks.json"
+    },
+    "fac-review": {
+      "allow": [
+        "Read",
+        "Bash(gh pr view:*)",
+        "Bash(gh pr diff:*)",
+        "Bash(gh pr comment:*)",
+        "Bash(gh issue edit:*)"
+      ],
+      "why": "**沒有 Write 也沒有 Edit。** 它產風險說明，不改任何東西"
+    },
+    "fac-verify": {
+      "allow": [
+        "Read",
+        "Write",
+        "Bash(npx playwright:*)",
+        "Bash(gh pr:*)",
+        "Bash(gh issue edit:*)"
+      ],
+      "why": "它寫證據到 .factory/evidence/，不改產品程式碼。所以沒有 Edit"
+    },
+    "fac-ship": {
+      "allow": [
+        "Read",
+        "Bash(gh pr view:*)",
+        "Bash(gh issue close:*)"
+      ],
+      "why": "**它不能讀密鑰。** 部署由平台觸發，而觸發的指令在 tech-spec.md 的「部署」那一節"
+    },
+    "fac-monitor": {
+      "allow": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(gh issue create:*)"
+      ],
+      "why": "它寫帳本、開新任務。監控來源的指令由 factory.json 宣告，所以那幾條要另外加進 run-worker.sh"
+    },
+    "fac-improve-triage": {
+      "allow": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(git:*)",
+        "Bash(gh pr:*)"
+      ],
+      "why": "外迴圈改 skill 要走 PR。共用檔案的改動要對腳手架送 PR"
+    },
+    "fac-improve-review": {
+      "allow": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(git:*)",
+        "Bash(gh pr:*)"
+      ],
+      "why": "同上"
+    },
+    "fac-improve-verify": {
+      "allow": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(git:*)",
+        "Bash(gh pr:*)"
+      ],
+      "why": "同上"
+    }
+  },
+  "never": {
+    "allow": [],
+    "why": "沒有一站拿得到這些：讀生產密鑰、刪 repo、改分支保護、改 .factory/tools.json 自己。它們不在任何一站的清單裡，所以它們不用另外禁 —— 允許清單沒列的就是沒有。"
+  }
+}

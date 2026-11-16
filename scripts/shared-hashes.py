@@ -5,7 +5,7 @@
 
 1. `.claude/skills/fac-*/SKILL.md` → **整個檔案**。它們整檔都是腳手架的，
    升級時整批換。只算標記之間的話，標記外面加的東西會躲過比對。
-2. `.factory/security.md` 與 `.factory/dispatch.py` → 整個檔案。腳手架出的，工廠不改。
+2. `.factory/security.md`、`.factory/dispatch.py` 與 `.factory/tools.json` → 整個檔案。腳手架出的，工廠不改。
 3. 其餘有 `<!-- fac:shared:start -->` 的 → 只算那對標記之間（region）。
    那是混合檔案：`CLAUDE.md` 與 `CONTEXT.md` 一個檔案裡兩層，
    標記外面本來就是那座工廠自己的。
@@ -26,7 +26,7 @@ from pathlib import Path
 
 START = "<!-- fac:shared:start -->"
 END = "<!-- fac:shared:end -->"
-WHOLE_FILE = [".factory/security.md", ".factory/dispatch.py"]
+WHOLE_FILE = [".factory/security.md", ".factory/dispatch.py", ".factory/tools.json"]
 SKIP_DIRS = {".git", "node_modules", ".factory/evidence"}
 
 
