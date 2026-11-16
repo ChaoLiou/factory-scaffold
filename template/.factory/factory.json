@@ -2,19 +2,19 @@
   "declaration_version": 1,
 
   "worker": {
-    "command": "{{WORKER_COMMAND}}",
-    "note": "起一個工人。{skill} 換成 skill 的名字，{task} 換成任務編號。環境變數 FAC_WORKER_CMD 蓋過這一格。",
+    "command": ".factory/run-worker.sh {skill} {task}",
+    "note": "起一個工人。{skill} 換成 skill 的名字，{task} 換成任務編號。那支腳本是這座工廠自己的 —— 換 harness 只改它。環境變數 FAC_WORKER_CMD 蓋過這一格。",
     "fresh_process_per_round": true
   },
 
   "isolation": {
-    "worktree_root": "{{WORKTREE_ROOT}}",
+    "worktree_root": "../.worktrees",
     "remove_after": true,
     "note": "實作站跑在隔離的 worktree。派工建，跑完移除。worktree 不是記憶層。"
   },
 
   "dispatch": {
-    "poll": "{{DISPATCH_POLL}}",
+    "poll": "manual",
     "monitor_every_rounds": 1,
     "improve_every_days": 7,
     "note": "排程不是一個服務。派工看工廠帳本的最後一列，自己算該不該跑監控與外迴圈。"
