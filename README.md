@@ -1,4 +1,4 @@
-# chaol
+# factory-scaffold
 
 **腳手架產生工廠，工廠產生產品。**
 

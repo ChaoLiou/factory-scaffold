@@ -355,7 +355,7 @@ L1 民眾與 L2 稍有背景是設計保留，未來會存在。保留它們而�
 還沒建。建的時候照這個形狀：
 
 ```
-chaol/
+factory-scaffold/
   README.md                     ✓ 專案說明
   CONTEXT.md
   CLAUDE.md                     本檔
