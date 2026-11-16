@@ -331,6 +331,27 @@
 
 一個問操作得不得了，一個問誰承擔風險。四格裡右上那一格是真實且常見的：一個沒有登入的訂單表單，大家看到同一頁，但它存客戶的姓名電話。
 
+### 4.1.4 第 2 站的分支保護設哪幾條
+
+第一次建廠的時候定出來的。它是骨架，所以每座工廠一樣。
+
+| 設定 | 值 | 理由 |
+|---|---|---|
+| `required_approving_review_count` | **0** | 工人開的 PR 跟廠主是同一個帳號，而 GitHub 不准自己核准自己的 PR。設 1 會死鎖。而且驗證關卡的點頭是**合併**，不是按 Approve |
+| `allow_force_pushes` | false | 歷史是記憶層的一部分 |
+| `allow_deletions` | false | 同上 |
+| `required_linear_history` | true | 回滾要能一步退回。線性歷史讓那一步存在 |
+| `required_conversation_resolution` | true | 合併之前至少要碰過那些留言。那是讓「按通過」的成本不為零的其中一條 |
+| `dismiss_stale_reviews` | true | 新的 commit 推上去，舊的審查結果不算 |
+| `required_status_checks` | **先是 null** | CI 骨架還沒蓋。它一出現就要把那四項填進 `contexts` |
+| `enforce_admins` | false | 廠主要能在工廠卡住的時候自己出手。這是刻意留的逃生門 |
+
+**最後兩列是現在的狀態，不是終點。**
+
+`required_status_checks` 是空的，表示「CI 紅不准上」這條**現在沒有被 GitHub 擋住** —— 它只寫在 `fac-ship` 的第二個確認裡。那是 rules 層，而資安那四項該在 CI 層。見 `security.md` 第 2 節。
+
+`required_conversation_resolution` 對證據那則留言有沒有效，要在第一個真的 PR 上確認。它擋的是 review thread，而證據是一般留言。
+
 ### 4.2 對照表
 
 對照表查出來的是**產品型態**，不是技術棧。
