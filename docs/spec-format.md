@@ -2,7 +2,7 @@
 
 這份文件定義規格的格式。名詞一律照 `../CONTEXT.md`。
 
-格式大部分從 CodeShore 搬來。它已經跑過真實任務，不要重新發明。見第 7 節。
+這個格式跑過真實任務。**不要重新發明。** 要改就改這份文件，不要在個別規格裡自創欄位。
 
 ---
 
@@ -15,7 +15,14 @@
 | **產品層級** | 整個產品是什麼 | `SPEC.md`、`docs/tech-spec.md` | 很低 |
 | **功能層級** | 一個功能怎麼做 | `specs/<feature>/` | 一個功能一份 |
 
-產品層級由**建廠產線第 1 站**產出。範本在 `../template/`。
+產品層級的範本在 `../template/`。它分兩段填：
+
+| 內容 | 誰填 |
+|---|---|
+| `SPEC.md` 的定位與五題答案 | 建廠產線第 1 站 |
+| `SPEC.md` 其餘各節、`docs/tech-spec.md` | **工廠建好之後第一筆任務的規格站** |
+
+建廠產線不讀白話規格，所以它只填最小的那兩節。見 `factory-setup.md` 2.1。
 
 功能層級由**產品產線的規格站**產出。格式見下。
 
@@ -56,7 +63,7 @@ specs/<feature>/
 
 `phase` 的值依序：`initialized` → `requirements-generated` → `design-generated` → `tasks-generated` → `implementing` → `done`。
 
-`approvals` 是關卡的狀態機。`generated` 由 agent 設，**`approved` 只有廠主能設。**
+`approvals` 是關卡的狀態機。`generated` 由工人設，**`approved` 只有廠主能設。**
 
 ---
 
@@ -176,7 +183,7 @@ EARS 的價值是**句型固定，所以讀得出來驗不驗得了**。寫不�
 
 壞的例子：「migration 寫好了。」—— 檢查不了。
 
-它是 `fac-verify-completion` 的輸入。沒有它，「做完了」只是 agent 的自述。
+它是 `fac-implement` 開 PR 之前自檢的輸入。見 `fac-implement` 3.5。沒有它，「做完了」只是工人的自述。
 
 ### 6.2 兩個標籤
 
@@ -191,22 +198,15 @@ EARS 的價值是**句型固定，所以讀得出來驗不驗得了**。寫不�
 
 不要去改 `design.md` 假裝當初就這樣想。
 
-這一行是外迴圈的訊號來源 —— 一直偏離同一個地方，表示規格站的技能檔漏了什麼。
+這一行是外迴圈的訊號來源 —— 一直偏離同一個地方，表示規格站的 skill 漏了什麼。
 
 ---
 
-## 7. 來源
+## 7. 這個格式自己加的兩項
 
-格式出自 CodeShore 的 `.kiro/`：
+格式的主體跑過真實任務，照用。本專案自己加的只有兩項：
 
-- `spec.json` 的 `approvals` 狀態機
-- `requirements.md` 的範圍界定與 EARS 驗收條件
-- `design.md` 的十二節，含 Boundary Commitments、Full Block／Summary Only、Requirements Traceability
-- `tasks.md` 的可觀察完成狀態、兩個標籤、偏離原計畫
+1. **第 1 節的兩個層級切分。** 原本只有功能層級加一組常駐脈絡，沒有明確的「產品層級規格」。
+2. **5.2 的「不要全部寫 Full Block」那條警告。** 全部寫滿會把設計寫成實作，而且廠主在關卡上讀不完。
 
-路徑 `/home/chaol/CodeShore/.kiro/`。範例在 `specs/job-timestamp-separation/`。
-
-本專案自己加的只有兩項：
-
-1. 第 1 節的兩個層級切分。CodeShore 只有功能層級加 steering，沒有明確的「產品層級規格」。
-2. 5.2 的「不要全部寫 Full Block」那條警告。
+這兩項沒有被實作驗證過。它們是這份格式裡最可能要改的部分。

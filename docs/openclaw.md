@@ -19,7 +19,7 @@ OpenClaw 是一個開源、自架的 agent 閘道器（gateway）。作者是 Pe
 
 一個 Gateway 後面可以跑多個 agent，每個 agent 有自己的工作區、模型與工具權限。
 
-技能檔與記憶存成純 Markdown 與 YAML，放在 `~/.openclaw/workspace`。檔案包含 `AGENTS.md`、`SOUL.md`、`IDENTITY.md`、`USER.md`、`MEMORY.md`。session 與逐字稿存在 SQLite。
+skill 與記憶存成純 Markdown 與 YAML，放在 `~/.openclaw/workspace`。檔案包含 `AGENTS.md`、`SOUL.md`、`IDENTITY.md`、`USER.md`、`MEMORY.md`。session 與逐字稿存在 SQLite。
 
 支援的頻道（官方清單）：Discord、Google Chat、iMessage、Matrix、Microsoft Teams、Signal、Slack、Telegram、WhatsApp、Zalo。**清單裡沒有 LINE。**
 
@@ -34,7 +34,7 @@ OpenClaw 是一個開源、自架的 agent 閘道器（gateway）。作者是 Pe
 | 入口層 | 十種以上聊天頻道 | 已有 |
 | 分派層 | Gateway router、Task flow、Lobster 工作流引擎 | 部分已有 |
 | 執行層 | shell、檔案、瀏覽器自動化 | 已有 |
-| 記憶層 | Markdown／YAML 技能檔與記憶，SQLite session | 已有 |
+| 記憶層 | Markdown／YAML skill 與記憶，SQLite session | 已有 |
 | 關卡 | 暫停工作流、送結構化核准請求到人的頻道、等幾小時或幾天 | 已有 |
 | 24 小時 | cron、heartbeat、wakeup | 已有 |
 | 回頭箭頭 | Lobster 可恢復、可暫停、可回滾 | 部分已有 |
