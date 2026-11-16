@@ -124,15 +124,29 @@ L1 民眾與 L2 稍有背景是設計保留，未來會存在。保留它們而�
 
 ---
 
-## 目前沒有程式碼
+## 程式碼只有三支腳本
 
-這個 repo 現在只有文件。沒有 `package.json`、沒有建置、沒有測試、沒有 lint。
+沒有 `package.json`、沒有建置、沒有測試框架、沒有 lint。**不要編一個。**
 
-所以沒有 build、test、lint 指令可以跑。不要編一個。
+| 腳本 | 做什麼 | 怎麼驗它還活著 |
+|---|---|---|
+| `scripts/shared-hashes.py` | 算共用檔案的雜湊。建廠時寫，升級時比對 | `python3 scripts/shared-hashes.py list template` |
+| `scripts/new-factory.sh` | 從範本產生一座工廠。只做第 2 站的機械部分 | `bash -n scripts/new-factory.sh` |
+| `scripts/dispatch.py` | 派工。它是派工表唯一的機器可讀副本 | `python3 scripts/dispatch.py table` |
+
+三支都刻意寫成**沒有相依套件**：bash、python3 標準庫、git、`gh`。
 
 `template/.claude/skills/` 底下有十一份 skill。它們是純文字，不是程式碼。
 
-程式碼出現之後，第一批會是 `scripts/` 的派工腳本。那時這一節要改寫。
+### 改這三支的時候
+
+| 改什麼 | 要連著改什麼 |
+|---|---|
+| `dispatch.py` 的 `DISPATCH` 表 | `docs/factory.md` 5.5 的派工表。兩邊是同一張表 |
+| `shared-hashes.py` 的共用判定 | `docs/skills-layering.md` 第 2 節與 6.1 |
+| `new-factory.sh` 填哪些佔位符 | `docs/factory-setup.md` 第 2 節。它只填腳手架自己知道的那三個 |
+
+**不要讓腳本替廠主猜答案。** `new-factory.sh` 只填版本、commit 與時間戳，其餘佔位符留著給第 1 到第 4 站問。
 
 ---
 
@@ -269,7 +283,7 @@ L1 民眾與 L2 稍有背景是設計保留，未來會存在。保留它們而�
 8. **回滾要怎麼做。** 上線站不回滾，那是廠主的事，但沒寫他怎麼做。要不要要求產品把回滾做成一步，見 `docs/factory.md` 5.6.2。
 9. **測試會不會失敗要不要量。** mutation testing 算得出一個數字。要不要變成 CI 的第五項檢查，還沒定。
 10. **重播集存在哪、怎麼跑。** 格式與位置還沒定，而且它要等第一批任務跑完才有案例。見 `docs/factory.md` 7.2。
-11. **執行派工的那個東西。** 派工表已經寫完，見 `docs/factory.md` 5.5。缺的是收到「標籤變了」並起一個工人的那一塊。webhook、輪詢、或一個手動指令，三種都行。`scripts/` 還是空的。
+11. **起一個工人那一步怎麼接。** 派工本身寫完了 —— `scripts/dispatch.py`，選的是輪詢加手動指令。缺的是 `FAC_WORKER_CMD` 要指向什麼，以及隔離 worktree 與乾淨 session 誰建。見 `docs/factory.md` 5.5.5.4。
 
 **L1 才需要解的五題不列在這裡。** 它們在廠主不是你的時候才咬人，連同「為什麼現在不解」一起記在 `docs/security.md` 第 7 節。不要把它們當成待辦。
 
@@ -334,7 +348,9 @@ chaol/
       fac-improve-review/       ✓ 外迴圈。審查
       fac-improve-verify/       ✓ 外迴圈。驗證
   scripts/
-    new-factory.sh              ✗ 產生一座工廠
+    shared-hashes.py            ✓ 共用檔案的雜湊。建廠寫、升級比對
+    new-factory.sh              ✓ 產生一座工廠
+    dispatch.py                 ✓ 派工。派工表唯一的機器可讀副本
 
 ../<工廠名>/                     產生出來的工廠，在隔壁
 ```
