@@ -145,7 +145,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **右邊那一欄動到了就停下來。** 換技術棧動到 `fac-*`，表示共用層漏了技術棧進去。那是腳手架的問題，要走外迴圈回報。
 
-部署平台不在這裡。它是工廠基礎設施，由腳手架定。
+**換部署平台也是一筆任務。** 腳手架定的是預覽機制要滿足的五條，不是哪一家平台。
+
+換的時候改 `docs/tech-spec.md` 的「部署」那一節與 `.factory/contract.json` 的 `preview` 欄位。**五條有一條做不到就停下來** —— 那個平台不符合合約。
 
 ## 外迴圈
 
