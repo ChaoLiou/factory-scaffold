@@ -77,6 +77,8 @@ description: 實作站。在隔離的 worktree 裡寫 code，開一個 PR，貼 
 
 照 `design.md` 第 9 節的 Testing Strategy。沒有規格就照 `docs/tech-spec.md` 的慣例。
 
+**跑測試的指令在 `.factory/checks.json` 的 `commands.test`。** 那一格空的就停下來回報 —— 不要自己猜一個指令。
+
 **先寫測試，再寫實作。** 順序反過來，測試會長成「證明我寫的 code 跑得起來」，而不是「證明驗收條件成立」。
 
 ### 3.3.1 每一條測試要先紅過

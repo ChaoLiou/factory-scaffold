@@ -1,0 +1,46 @@
+{
+  "declaration_version": 1,
+
+  "worker": {
+    "command": "{{WORKER_COMMAND}}",
+    "note": "起一個工人。{skill} 換成 skill 的名字，{task} 換成任務編號。環境變數 FAC_WORKER_CMD 蓋過這一格。",
+    "fresh_process_per_round": true
+  },
+
+  "isolation": {
+    "worktree_root": "{{WORKTREE_ROOT}}",
+    "remove_after": true,
+    "note": "實作站跑在隔離的 worktree。派工建，跑完移除。worktree 不是記憶層。"
+  },
+
+  "dispatch": {
+    "poll": "{{DISPATCH_POLL}}",
+    "monitor_every_rounds": 1,
+    "improve_every_days": 7,
+    "note": "排程不是一個服務。派工看工廠帳本的最後一列，自己算該不該跑監控與外迴圈。"
+  },
+
+  "browser": {
+    "tool": "playwright",
+    "version_check": "npx playwright --version",
+    "video": true,
+    "viewport": "1280x720",
+    "note": "工廠基礎設施，不是產品依賴。它不進產品的依賴清單。沒有畫面的產品型態不用它。"
+  },
+
+  "monitor": {
+    "sources": [
+      {
+        "name": "errors",
+        "command": "{{MONITOR_ERRORS_COMMAND}}",
+        "outputs": "json"
+      },
+      {
+        "name": "traffic",
+        "command": "{{MONITOR_TRAFFIC_COMMAND}}",
+        "outputs": "json"
+      }
+    ],
+    "note": "每一條都必須輸出 JSON。監控站只取結構化欄位 —— 它不讀原始日誌，因為裡面有終端使用者寫的字。"
+  }
+}

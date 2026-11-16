@@ -1,0 +1,46 @@
+{
+  "declaration_version": 1,
+  "note": "綁產品技術的指令都在這裡。換技術棧改這一份，不要改 fac-* 或共用的 CI 骨架。",
+
+  "commands": {
+    "install": "{{INSTALL_COMMAND}}",
+    "test": "{{TEST_COMMAND}}",
+    "build": "{{BUILD_COMMAND}}"
+  },
+
+  "ci": [
+    {
+      "blocks": "build 輸出裡有像憑證的字串",
+      "command": "{{CHECK_SECRETS_COMMAND}}",
+      "red_blocks_merge": true
+    },
+    {
+      "blocks": "資料庫的 row level security 被關掉或 policy 寫錯",
+      "command": "{{CHECK_RLS_COMMAND}}",
+      "red_blocks_merge": true
+    },
+    {
+      "blocks": "依賴漏洞",
+      "command": "{{CHECK_DEPS_COMMAND}}",
+      "red_blocks_merge": false
+    },
+    {
+      "blocks": "偷偷換套件。lockfile 必須有變更紀錄",
+      "command": "{{CHECK_LOCKFILE_COMMAND}}",
+      "red_blocks_merge": false
+    }
+  ],
+
+  "ci_when_personal_data": [
+    {
+      "blocks": "migration 悄悄多出像個資的欄位名",
+      "command": "{{CHECK_PII_COLUMNS_COMMAND}}",
+      "red_blocks_merge": true
+    },
+    {
+      "blocks": "存別人資料的表沒有保留期限欄位",
+      "command": "{{CHECK_RETENTION_COMMAND}}",
+      "red_blocks_merge": true
+    }
+  ]
+}

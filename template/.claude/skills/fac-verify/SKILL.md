@@ -21,6 +21,7 @@ description: 驗證站。讀合約宣告、重置初始資料、操作一個 PR 
 | `.factory/contract.json` | 合約宣告。三項要求的實際形狀 |
 | `SPEC.md` | 不變量。要被操作出來的那些性質 |
 | `.factory/security.md` 第 3 節 | 架構層規則。碰資料之前讀 |
+| `.factory/factory.json` 的 `browser` | 用什麼操作產品、怎麼錄影 |
 | 這個 PR 的內文與 diff | 這次改了什麼 |
 
 **合約宣告沒寫的事不要猜。** 宣告缺一格就停下來，照第 9 節回報。

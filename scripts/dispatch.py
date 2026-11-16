@@ -38,12 +38,17 @@ DISPATCH = {
 # 不由標籤觸發的三個。
 NOT_BY_LABEL = [
     ("廠主合併了 PR", "fac-ship", "唯一有部署權限的那一個"),
-    ("排程。每輪", "fac-monitor", "不是這支程式的事。用 cron"),
-    ("排程。每週", "fac-improve-*", "同上"),
+    ("帳本上一列是上一輪", "fac-monitor", "從帳本算，不用排程器"),
+    ("帳本上一列超過門檻天數", "fac-improve-*", "同上。門檻在 factory.json"),
 ]
 
 KIND_LABELS = {"fac-kind-bug", "fac-kind-feature", "fac-kind-copy", "fac-kind-chore"}
 STATE_FILE = ".factory/dispatch-state.json"
+FACTORY_FILE = ".factory/factory.json"
+LEDGER = "docs/factory-log.md"
+
+# 要在隔離的 worktree 裡跑的站。
+NEEDS_WORKTREE = {"fac-implement"}
 
 
 def die(msg):
@@ -104,6 +109,55 @@ def plan(factory: Path):
     return jobs
 
 
+def load_factory(factory: Path):
+    """讀工廠宣告。缺了就停下來，不要猜。"""
+    path = factory / FACTORY_FILE
+    if not path.is_file():
+        die(f"找不到 {FACTORY_FILE}。那一份宣告「這座工廠怎麼跑」，少了它派不了工。")
+    d = json.loads(path.read_text(encoding="utf-8"))
+    cmd = (d.get("worker") or {}).get("command") or ""
+    if not cmd or cmd.startswith("{{"):
+        die("factory.json 的 worker.command 還沒填。\n"
+            "建廠第 4 站該填它。見腳手架的 docs/factory-setup.md 第 3 節的驗收清單。")
+    return d
+
+
+def worker_argv(template: str, skill: str, task: int):
+    """把宣告裡的指令樣板展開。{skill} 與 {task} 是它的兩個洞。"""
+    if "{skill}" not in template:
+        die("worker.command 裡沒有 {skill}。那樣起來的工人不知道自己是哪一站。")
+    return [
+        part.replace("{skill}", skill).replace("{task}", str(task))
+        for part in template.split()
+    ]
+
+
+def ledger_last_day(factory: Path):
+    """工廠帳本最後一列的日期。排程不是服務，帳本就是那個時鐘。"""
+    path = factory / LEDGER
+    if not path.is_file():
+        return None
+    import re
+    days = re.findall(r"\b(20\d\d-\d\d-\d\d)\b", path.read_text(encoding="utf-8"))
+    return max(days) if days else None
+
+
+def due(factory: Path, conf):
+    """該不該跑監控與外迴圈。算出來的，不是排程器叫的。"""
+    from datetime import date
+    last = ledger_last_day(factory)
+    every = (conf.get("dispatch") or {}).get("improve_every_days", 7)
+    if last is None:
+        return ["監控（帳本還是空的，所以第一輪就該跑）"]
+    gap = (date.today() - date.fromisoformat(last)).days
+    out = []
+    if gap >= 1:
+        out.append(f"監控（帳本最後一列是 {last}，{gap} 天前）")
+    if gap >= every:
+        out.append(f"外迴圈（距今 {gap} 天，門檻 {every}）")
+    return out
+
+
 def load_state(factory: Path):
     path = factory / STATE_FILE
     if path.is_file():
@@ -119,6 +173,30 @@ def save_state(factory: Path, state):
     )
 
 
+def make_worktree(factory: Path, conf, number: int) -> Path:
+    """實作站跑在隔離的 worktree。派工建，跑完移除。"""
+    root = (conf.get("isolation") or {}).get("worktree_root") or ""
+    if not root or root.startswith("{{"):
+        die("factory.json 的 isolation.worktree_root 還沒填。"
+            "實作站要隔離的 worktree，不然它污染工作目錄。")
+    base = (factory / root).resolve()
+    base.mkdir(parents=True, exist_ok=True)
+    tree = base / f"task-{number}"
+    if tree.exists():
+        die(f"{tree} 已經在了。前一輪沒清乾淨，先看一眼再決定，不要蓋掉。")
+    branch = f"task/{number}"
+    subprocess.run(
+        ["git", "worktree", "add", "-b", branch, str(tree)],
+        cwd=factory, check=True, capture_output=True, text=True,
+    )
+    return tree
+
+
+def drop_worktree(factory: Path, tree: Path):
+    subprocess.run(["git", "worktree", "remove", "--force", str(tree)],
+                   cwd=factory, check=False, capture_output=True)
+
+
 def main(argv):
     if len(argv) < 2 or argv[1] not in {"table", "plan", "run"}:
         die(__doc__)
@@ -131,13 +209,18 @@ def main(argv):
     if not (factory / ".factory" / "manifest.json").is_file():
         die(f"{factory} 不是一座工廠。找不到 .factory/manifest.json")
 
+    conf = load_factory(factory)
     jobs = plan(factory)
+
+    for line in due(factory, conf):
+        print(f"排程   {line}")
+
     if not jobs:
         print("沒有開著的任務。")
         return 0
 
     state = load_state(factory)
-    worker = os.environ.get("FAC_WORKER_CMD")
+    worker = os.environ.get("FAC_WORKER_CMD") or conf["worker"]["command"]
 
     for number, label, skill, note in jobs:
         key = f"{number}:{label}"
@@ -150,15 +233,22 @@ def main(argv):
         print(f"#{number:<5} {label:22} → {skill}  {note}")
         if action != "run":
             continue
-        if not worker:
-            die("要真的派工就給 FAC_WORKER_CMD，例如：\n"
-                "  FAC_WORKER_CMD='claude -p' scripts/dispatch.py run <工廠目錄>\n"
-                "怎麼起一個工人是會變的東西，所以它不寫死在這裡。")
+        argv = worker_argv(worker, skill, number)
+        cwd = factory
+        tree = None
+        if skill in NEEDS_WORKTREE:
+            tree = make_worktree(factory, conf, number)
+            cwd = tree
+            print(f"       worktree {tree}")
         # 起工人之前先記，不是之後。起到一半掛掉也不會被派第二次 ——
         # 開 PR、貼評論、部署都有副作用。見 docs/factory.md 5.5.4。
         state[key] = {"skill": skill, "dispatched": True}
         save_state(factory, state)
-        subprocess.run([*worker.split(), skill, str(number)], cwd=factory, check=False)
+        try:
+            subprocess.run(argv, cwd=cwd, check=False)
+        finally:
+            if tree and (conf.get("isolation") or {}).get("remove_after", True):
+                drop_worktree(factory, tree)
 
     if action != "run":
         print("\n這是 plan。要真的派工加 run，而且給 FAC_WORKER_CMD。")
