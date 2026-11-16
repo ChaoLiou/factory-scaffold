@@ -1,0 +1,38 @@
+{
+  "contract_version": 1,
+  "product_form": "{{PRODUCT_FORM}}",
+
+  "preview": {
+    "read_from": "{{PREVIEW_READ_FROM}}",
+    "match": "{{PREVIEW_MATCH}}",
+    "commit_check": "{{PREVIEW_COMMIT_CHECK}}",
+    "service_token_env": ["{{PREVIEW_TOKEN_ENV}}"],
+    "ready_timeout_seconds": 600
+  },
+
+  "seed": {
+    "reset_command": "{{SEED_RESET_COMMAND}}",
+    "ready_check": "{{SEED_READY_CHECK}}"
+  },
+
+  "login": {
+    "applicable": true,
+    "accounts": [
+      {
+        "role": "{{ROLE}}",
+        "email_env": "{{EMAIL_ENV}}",
+        "password_env": "{{PASSWORD_ENV}}",
+        "login_path": "{{LOGIN_PATH}}",
+        "signed_in_marker": "{{SIGNED_IN_MARKER}}"
+      }
+    ]
+  },
+
+  "allowance": [
+    {
+      "kind": "{{ALLOWANCE_KIND}}",
+      "value": "{{ALLOWANCE_VALUE}}",
+      "why": "{{ALLOWANCE_WHY}}"
+    }
+  ]
+}
