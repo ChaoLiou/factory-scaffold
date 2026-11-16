@@ -1,0 +1,3 @@
+# 廠主的控制台。它是一個 release，不是這座工廠的原始碼。
+# 版本記在 .factory/manifest.json 的 console.version。
+.factory/console/

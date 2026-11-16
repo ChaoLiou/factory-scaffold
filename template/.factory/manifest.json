@@ -4,6 +4,10 @@
     "commit": "{{SCAFFOLD_COMMIT}}"
   },
   "tier": "L3",
+  "console": {
+    "version": "{{CONSOLE_VERSION}}",
+    "path": ".factory/console"
+  },
   "product_form": "{{PRODUCT_FORM}}",
   "created_at": "{{TIMESTAMP}}",
   "shared": {}

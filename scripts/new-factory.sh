@@ -70,5 +70,9 @@ printf '第 3 站 接合約。挑平台之前先對五條，見 docs/factory-set
 printf '第 4 站 寫合約宣告。填 .factory/contract.json\n'
 printf '第 5 站 驗收。跑一次驗證站。標準只有一條：它跑得出證據\n\n'
 
+printf '廠主的控制台還沒附加。它是一個 release，不是這個 repo 的原始碼。\n'
+printf '第一座工廠正在生產它，所以現在還沒有 release 可以附加。\n'
+printf '在它出現之前，關卡走 GitHub —— 標籤、PR review、合併。\n\n'
+
 printf '還沒填的佔位符：\n'
 grep -rho '{{[A-Z0-9_]*}}' "$target" | sort | uniq -c | sort -rn | sed 's/^/  /'
