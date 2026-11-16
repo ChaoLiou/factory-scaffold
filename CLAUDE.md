@@ -365,6 +365,7 @@ factory-scaffold/
   CLAUDE.md                     本檔
   docs/                         六份設計
   template/                     工廠範本。腳手架的產出就是它的複製品
+    .gitignore                  ✓ 一條：.factory/console/ 不進版本控制
     CLAUDE.md                   ✓ 工廠的操作手冊。含 fac:shared 區
     CONTEXT.md                  ✓ 工廠的名詞表。含 fac:shared 區
     SPEC.md                     ✓ 白話規格範本。含四題的答案
@@ -375,8 +376,10 @@ factory-scaffold/
     .factory/
       manifest.json             ✓ 腳手架版本與共用檔案的雜湊
       security.md               ✓ 共用的資安規則
-      contract.json             ✓ 合約宣告
-      checks.json               ✗ CI 四項檢查的指令宣告
+      contract.json             ✓ 合約宣告。產品的形狀
+      checks.json               ✓ 指令宣告。產品技術的指令
+      factory.json              ✓ 工廠宣告。這座工廠的跑法
+      dispatch.py               ✓ 派工。整檔共用，雜湊守它
     .claude/skills/
       fac-intake/SKILL.md       ✓ 入口站
       fac-triage/SKILL.md       ✓ 分辨站
@@ -392,7 +395,7 @@ factory-scaffold/
   scripts/
     shared-hashes.py            ✓ 共用檔案的雜湊。建廠寫、升級比對
     new-factory.sh              ✓ 產生一座工廠
-    dispatch.py                 ✓ 派工。派工表唯一的機器可讀副本
+    dispatch.py                 ✓ 派工。複製進每座工廠的 .factory/
 
 ../<工廠名>/                     產生出來的工廠，在隔壁
 ```
